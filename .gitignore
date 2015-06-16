@@ -30,3 +30,7 @@
 
 *.log
 
+# ignore build folder
+
+build/
+
