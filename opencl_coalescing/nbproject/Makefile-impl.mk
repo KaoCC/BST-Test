@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=BinarySearchTree
+PROJECTNAME=opencl_coalescing
 
 # Active Configuration
 DEFAULTCONF=Debug

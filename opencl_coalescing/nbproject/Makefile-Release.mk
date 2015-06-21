@@ -35,7 +35,6 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/bst_cpu.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/opencl_factory.o \
 	${OBJECTDIR}/profile_timer.o \
@@ -60,16 +59,11 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/binarysearchtree
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/opencl_coalescing
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/binarysearchtree: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/opencl_coalescing: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/binarysearchtree ${OBJECTFILES} ${LDLIBSOPTIONS}
-
-${OBJECTDIR}/bst_cpu.o: bst_cpu.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/bst_cpu.o bst_cpu.cpp
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/opencl_coalescing ${OBJECTFILES} ${LDLIBSOPTIONS}
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -97,7 +91,7 @@ ${OBJECTDIR}/runtime_exception.o: runtime_exception.cpp
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/binarysearchtree
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/opencl_coalescing
 
 # Subprojects
 .clean-subprojects:

@@ -27,33 +27,28 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "bst_type.hpp"
+#ifndef OPENCL_FACTORY_HPP
+#define	OPENCL_FACTORY_HPP
 
-__kernel void bst_find(__global void* node_list, int node_count,
-                       __global int* find_result_list,
-                       __global int*  find_key_list,
-                       int find_thread_count
-) {
+#include <fstream>
+#include <iostream>
 
-    int gid             = get_global_id(0);
-    int node_current_id = 0;
-    
-    if (gid >= find_thread_count) return;
-    __global struct BSTNode* node_list_cast = node_list;
+#include <CL/cl.h>
 
-    while (node_current_id >= 0 && node_current_id < node_count) {
-        __global struct BSTNode* node_current = &node_list_cast[node_current_id];
+#include "runtime_exception.hpp"
 
-        if (find_key_list[gid] < node_current->data.key) {
-            node_current_id = node_current->left;
-        } else if (find_key_list[gid] > node_current->data.key) {
-            node_current_id = node_current->right;
-        } else {
-            break;
-        }
-    }
-    
-    find_result_list[0] = node_current_id;
-    return;
-}
+using namespace std;
+
+extern cl_int           error;
+extern cl_platform_id   platform;
+extern cl_device_id     device_id;
+extern cl_context       context;
+extern cl_command_queue command_queue;
+extern cl_program       program;
+extern cl_kernel        kernel;
+
+extern void initialize_cl_environment();
+extern void load_cl_program_from_file(const char* file_name, const char* kernel_name);
+
+#endif	/* OPENCL_FACTORY_HPP */
 

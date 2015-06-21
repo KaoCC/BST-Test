@@ -61,28 +61,17 @@ void initialize_cl_environment() {
     
 }
 
-void load_cl_program_from_file(const char* file_name) {
+void load_cl_program_from_file(const char* file_name, const char* kernel_name) {
 
-/*    
-    ifstream file_stream(file_name);  
-    file_stream.seekg(0, ios::end);  
-    size_t file_length = file_stream.tellg();  
-    char* file_buffer = new char[file_length];  
-    file_stream.seekg(0, ios::beg);   
-    file_stream.read(file_buffer, file_length);  
-    file_stream.close(); */ 
+	fstream file_stream;
+	file_stream.exceptions(ifstream::eofbit | ifstream::failbit | ifstream::badbit);
+	file_stream.open(file_name, std::fstream::in | std::fstream::binary);
+
+	string program_source(istreambuf_iterator<char>(file_stream), (istreambuf_iterator<char>()));
+
+	const char* program_source_buffer = program_source.c_str();
   
-
-	std::fstream file;
-	file.exceptions(std::ifstream::eofbit | std::ifstream::failbit | std::ifstream::badbit);
-	file.open(file_name, std::fstream::in | std::fstream::binary);
-
-	std::string program_source(std::istreambuf_iterator<char>(file), (std::istreambuf_iterator<char>()));
-
-	const char* source = program_source.c_str();
-
-  
-    program = clCreateProgramWithSource(context, 1, &source, nullptr, &error);
+    program = clCreateProgramWithSource(context, 1, &program_source_buffer, nullptr, &error);
     if (error != CL_SUCCESS)
         DEBUG_THROW(ERR_SYSCALL_FAIL, "clCreateProgramWithSource error");
     

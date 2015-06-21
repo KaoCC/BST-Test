@@ -47,10 +47,7 @@ using namespace std;
  */
 int main(int argc, char** argv) {
 
-
-
     runtime_exception::register_signal_handlers();
-
     
     BSTNode* node_list = new BSTNode[BST_NODE_COUNT];
     for (int i = 0; i < BST_NODE_COUNT; i++) {
@@ -62,13 +59,9 @@ int main(int argc, char** argv) {
     bst_build(node_list, BST_NODE_COUNT);
     stop_timer();
     DEBUG_PRINT(ERR_INFO, "BST build time: %lld\n", dump_timer_delta());
-
     
     int* find_key_list    = new int[BST_NODE_COUNT];
     int* find_result_list = new int[BST_NODE_COUNT];
-
-
-    std::cerr << "GPU OpenCL random traverse." << std::endl;
     
     /**
      * GPU OpenCL random traverse.
@@ -147,14 +140,6 @@ int main(int argc, char** argv) {
     stop_timer();
     DEBUG_PRINT(ERR_INFO, "BST GPU clEnqueueReadBuffer time: %lld\n", dump_timer_delta());
 
-
-//////////////// !!!!!!    
-//    return 0;
-
-
-    std::cerr << "GPU OpenCL no branch traverse." << std::endl;
-
-
     /**
      * GPU OpenCL no branch traverse.
      */
@@ -205,9 +190,6 @@ int main(int argc, char** argv) {
     // </editor-fold>
     stop_timer();
     DEBUG_PRINT(ERR_INFO, "BST GPU clEnqueueReadBuffer time: %lld\n", dump_timer_delta());
-
-
-    std::cerr << "GPU OpenCL warp no branch grouping traverse." << std::endl;
     
     /**
      * GPU OpenCL warp no branch grouping traverse.
@@ -256,12 +238,10 @@ int main(int argc, char** argv) {
     error = clEnqueueReadBuffer(command_queue, cl_find_result_list, CL_TRUE, 0,
                                 sizeof (int) * BST_NODE_COUNT, find_result_list,
                                 0, nullptr, nullptr);
-
     // </editor-fold>
     stop_timer();
     DEBUG_PRINT(ERR_INFO, "BST GPU clEnqueueReadBuffer time: %lld\n", dump_timer_delta());
-
-
+    
     // Clean up.
     delete [] node_list;
     clReleaseMemObject(cl_node_list);
