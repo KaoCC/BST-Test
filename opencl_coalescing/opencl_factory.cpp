@@ -37,6 +37,8 @@ cl_command_queue command_queue;
 cl_program       program;
 cl_kernel        kernel;
 
+
+
 void initialize_cl_environment() {
     
     error = clGetPlatformIDs(1, &platform_id, nullptr);
@@ -85,7 +87,7 @@ void load_cl_program_from_file(const char* file_name, const char* kernel_name) {
         DEBUG_THROW(ERR_SYSCALL_FAIL, "clCreateProgramWithSource %s", error_buffer);
     }
     
-    kernel = clCreateKernel(program, "bst_find", &error);
+    kernel = clCreateKernel(program, kernel_name, &error);
     if (error != CL_SUCCESS)
         DEBUG_THROW(ERR_SYSCALL_FAIL, "clCreateKernel error");
 }

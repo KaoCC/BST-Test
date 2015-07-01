@@ -31,12 +31,31 @@ __kernel void array_copy_kernel(__global int* a_list, __global int* b_list, int 
                                 int stride) {
 
     int gid = get_global_id(0);
-    int off = gid + stride;
+
+// test 1:
+   int off = gid + (stride);
     
-    if (off >= element_count) return;
+    if (off >= element_count) return;  
+    b_list[off] = a_list[off];
     
-    b[off] = a[off];
-    
-    return;
+
+// test 2:
+
+//int off = gid % stride;
+//if (off >= element_count) return; 
+//b_list[off] = a_list[off];
+
+
+
+// test 3:
+
+//int off = gid;
+//for (int i = 0; i < 32; ++i) {
+//	b_list[off] += a_list[off + i + stride];
+//}
+
+
+
+
 }
 

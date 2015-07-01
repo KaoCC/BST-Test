@@ -72,18 +72,29 @@ int main(int argc, char** argv) {
                                      CL_KERNEL_WORK_GROUP_SIZE,
                                      sizeof (local_size), &local_size, nullptr);
     local_size = min(local_size, global_size);
-    
-    for (int i = 0; i < 32; i++) {
+
+    	
+//    int i = 2;
+
+    int test =  0;
+
+
+//    __builtin_prefetch(a_list, 0, 3);
+//    __builtin_prefetch(b_list, 0, 3);
+
+    for (int i = 0; i < 128; ++i) {
         error = clSetKernelArg(kernel, 0, sizeof(cl_mem), &cl_a_list);
         error = clSetKernelArg(kernel, 1, sizeof(cl_mem), &cl_b_list);
         error = clSetKernelArg(kernel, 2, sizeof(int),    &element_count);
-        error = clSetKernelArg(kernel, 2, sizeof(int),    &i);
+        error = clSetKernelArg(kernel, 3, sizeof(int),    &i);
         error = clEnqueueNDRangeKernel(command_queue, kernel, 1, nullptr, &global_size, &local_size,
                                        0, nullptr, nullptr);
-    }
-    
+
+    }    
     error = clEnqueueReadBuffer(command_queue, cl_b_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
                                 b_list, 0, nullptr, nullptr);
+
+
 
     // Clean up.
     delete [] a_list;
