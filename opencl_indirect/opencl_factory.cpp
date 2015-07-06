@@ -45,7 +45,7 @@ void initialize_cl_environment() {
     if (error != CL_SUCCESS)
         DEBUG_THROW(ERR_SYSCALL_FAIL, "clGetPlatformIDs error: %d\n", error);
     
-    error = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_ALL, 1, &device_id, nullptr);
+    error = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_GPU, 1, &device_id, nullptr);
     if (error != CL_SUCCESS)
         DEBUG_THROW(ERR_SYSCALL_FAIL, "clGetDeviceIDs error: %d\n", error);
     
