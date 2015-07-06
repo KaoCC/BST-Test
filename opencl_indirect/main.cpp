@@ -89,11 +89,40 @@ int main(int argc, char** argv) {
     error = clEnqueueReadBuffer(command_queue, cl_a_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
                                 b_list, 0, nullptr, nullptr);
     
-    // Test 2: shuffled pattern.
+    // Test 2: global shuffled pattern.
     for (int i = 0; i < ELEMENT_COUNT; i++) {
         b_vec[i] = i;
     }
     random_shuffle(b_vec.begin(), b_vec.end());
+    b_list = &b_vec[0];
+    
+    error = clEnqueueWriteBuffer(command_queue, cl_a_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
+                                 a_list, 0, nullptr, nullptr);
+    error = clEnqueueWriteBuffer(command_queue, cl_b_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
+                                 b_list, 0, nullptr, nullptr);
+
+    global_size       = element_count;
+    error = clGetKernelWorkGroupInfo(kernel, device_id,
+                                     CL_KERNEL_WORK_GROUP_SIZE,
+                                     sizeof (local_size), &local_size, nullptr);
+    local_size = min(local_size, global_size);
+
+    error = clSetKernelArg(kernel, 0, sizeof (cl_mem), &cl_a_list);
+    error = clSetKernelArg(kernel, 1, sizeof (cl_mem), &cl_b_list);
+    error = clSetKernelArg(kernel, 2, sizeof (int), &element_count);
+    error = clEnqueueNDRangeKernel(command_queue, kernel, 1, nullptr, &global_size, &local_size,
+            0, nullptr, nullptr);
+
+    error = clEnqueueReadBuffer(command_queue, cl_a_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
+                                b_list, 0, nullptr, nullptr);
+    
+    // Test 2: warp internal shuffled pattern.
+    for (int i = 0; i < ELEMENT_COUNT; i++) {
+        b_vec[i] = i;
+        if ((i + 1) % 32 == 0) {
+            random_shuffle(b_vec.begin() + i - 31, b_vec.begin() + i);
+        }
+    }
     b_list = &b_vec[0];
     
     error = clEnqueueWriteBuffer(command_queue, cl_a_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
