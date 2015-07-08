@@ -117,33 +117,36 @@ int main(int argc, char** argv) {
                                 b_list, 0, nullptr, nullptr);
     
     // Test 2: warp internal shuffled pattern.
-    for (int i = 0; i < ELEMENT_COUNT; i++) {
-        b_vec[i] = i;
-        if ((i + 1) % 32 == 0) {
-            random_shuffle(b_vec.begin() + i - 31, b_vec.begin() + i);
+    for (int i = 0; 64 * (int) pow(2, i) < ELEMENT_COUNT; i++) {
+        int shuffle_bound = 64 * (int) pow(2, i);
+        for (int j = 0; j < ELEMENT_COUNT; j++) {
+            b_vec[j] = (j + shuffle_bound) % ELEMENT_COUNT;
+            if ((j + 1) % shuffle_bound == 0) {
+                random_shuffle(b_vec.begin() + j - (shuffle_bound - 1), b_vec.begin() + j);
+            }
         }
+        b_list = &b_vec[0];
+
+        error = clEnqueueWriteBuffer(command_queue, cl_a_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
+                                     a_list, 0, nullptr, nullptr);
+        error = clEnqueueWriteBuffer(command_queue, cl_b_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
+                                     b_list, 0, nullptr, nullptr);
+
+        global_size = element_count;
+        error = clGetKernelWorkGroupInfo(kernel, device_id,
+                                         CL_KERNEL_WORK_GROUP_SIZE,
+                                         sizeof (local_size), &local_size, nullptr);
+        local_size = min(local_size, global_size);
+
+        error = clSetKernelArg(kernel, 0, sizeof (cl_mem), &cl_a_list);
+        error = clSetKernelArg(kernel, 1, sizeof (cl_mem), &cl_b_list);
+        error = clSetKernelArg(kernel, 2, sizeof (int), &element_count);
+        error = clEnqueueNDRangeKernel(command_queue, kernel, 1, nullptr, &global_size, &local_size,
+                0, nullptr, nullptr);
+
+        error = clEnqueueReadBuffer(command_queue, cl_a_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
+                                    b_list, 0, nullptr, nullptr);
     }
-    b_list = &b_vec[0];
-    
-    error = clEnqueueWriteBuffer(command_queue, cl_a_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
-                                 a_list, 0, nullptr, nullptr);
-    error = clEnqueueWriteBuffer(command_queue, cl_b_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
-                                 b_list, 0, nullptr, nullptr);
-
-    global_size       = element_count;
-    error = clGetKernelWorkGroupInfo(kernel, device_id,
-                                     CL_KERNEL_WORK_GROUP_SIZE,
-                                     sizeof (local_size), &local_size, nullptr);
-    local_size = min(local_size, global_size);
-
-    error = clSetKernelArg(kernel, 0, sizeof (cl_mem), &cl_a_list);
-    error = clSetKernelArg(kernel, 1, sizeof (cl_mem), &cl_b_list);
-    error = clSetKernelArg(kernel, 2, sizeof (int), &element_count);
-    error = clEnqueueNDRangeKernel(command_queue, kernel, 1, nullptr, &global_size, &local_size,
-            0, nullptr, nullptr);
-
-    error = clEnqueueReadBuffer(command_queue, cl_a_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
-                                b_list, 0, nullptr, nullptr);
 
     // Clean up.
     delete [] a_list;

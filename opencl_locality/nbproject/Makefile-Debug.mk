@@ -23,7 +23,7 @@ AS=as
 # Macros
 CND_PLATFORM=CLang-Linux-x86
 CND_DLIB_EXT=so
-CND_CONF=Release
+CND_CONF=Debug
 CND_DISTDIR=dist
 CND_BUILDDIR=build
 
@@ -55,35 +55,39 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=
+LDLIBSOPTIONS=-L/opt/AMDAPPSDK-2.9-1/lib/x86_64 -lOpenCL
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/opencl_indirect
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk opencl_locality
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/opencl_indirect: ${OBJECTFILES}
-	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/opencl_indirect ${OBJECTFILES} ${LDLIBSOPTIONS}
+opencl_locality: ${OBJECTFILES}
+	${LINK.cc} -o opencl_locality ${OBJECTFILES} ${LDLIBSOPTIONS}
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -g -Wall -I/usr/local/cuda-7.0/include -I/opt/AMDAPPSDK-2.9-1/include -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
 
 ${OBJECTDIR}/opencl_factory.o: opencl_factory.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/opencl_factory.o opencl_factory.cpp
+	$(COMPILE.cc) -g -Wall -I/usr/local/cuda-7.0/include -I/opt/AMDAPPSDK-2.9-1/include -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/opencl_factory.o opencl_factory.cpp
 
 ${OBJECTDIR}/profile_timer.o: profile_timer.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/profile_timer.o profile_timer.cpp
+	$(COMPILE.cc) -g -Wall -I/usr/local/cuda-7.0/include -I/opt/AMDAPPSDK-2.9-1/include -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/profile_timer.o profile_timer.cpp
 
 ${OBJECTDIR}/runtime_exception.o: runtime_exception.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/runtime_exception.o runtime_exception.cpp
+	$(COMPILE.cc) -g -Wall -I/usr/local/cuda-7.0/include -I/opt/AMDAPPSDK-2.9-1/include -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/runtime_exception.o runtime_exception.cpp
+
+${OBJECTDIR}/runtime_exception.hpp.gch: runtime_exception.hpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I/usr/local/cuda-7.0/include -I/opt/AMDAPPSDK-2.9-1/include -std=c++11 -MMD -MP -MF "$@.d" -o "$@" runtime_exception.hpp
 
 # Subprojects
 .build-subprojects:
@@ -91,7 +95,7 @@ ${OBJECTDIR}/runtime_exception.o: runtime_exception.cpp
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/opencl_indirect
+	${RM} opencl_locality
 
 # Subprojects
 .clean-subprojects:
