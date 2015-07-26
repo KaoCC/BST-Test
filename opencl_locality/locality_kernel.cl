@@ -27,14 +27,18 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-__kernel void horizontal_kernel(__global int* a_list, int element_count) {
+__kernel void horizontal_kernel(__global int* a_list, int shift, int element_count) {
 
-    /* work group size = 1, work group count = n */
+    /* work group size = 64, work group count = n */
     
     int gid = get_global_id(0);
-    int off = gid;
+    int off = gid / 64;
     
-    a_list[off] = 0;
+    __local int s[1024 * 4];
+    
+    if (a_list[off * shift] < 0) {
+        a_list[off * shift] = -1;
+    }
 }
 
 __kernel void vertical_kernel(__global int* a_list, int element_count) {
@@ -42,6 +46,8 @@ __kernel void vertical_kernel(__global int* a_list, int element_count) {
     /* work group size = 1, work group count = 1 */
     
     for (int i = 0; i < element_count; i++) {
-        a_list[i] = 0;
+        if (a_list[i] < 0) {
+            a_list[i] = -1;
+        }
     }
 }

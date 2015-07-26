@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
     DEBUG_PRINT(ERR_INFO, "BST CPU search time: %lld\n", dump_timer_delta());
     
     initialize_cl_environment();
-    load_cl_program_from_file("bst_kernel.cl");
+    load_cl_program_from_file("bst_kernel.cl", "bst_find");
 
     start_timer();
     // <editor-fold defaultstate="collapsed" desc="clCreateBuffer">

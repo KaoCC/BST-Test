@@ -34,6 +34,9 @@ __kernel void array_indirect_kernel(__global int* a_list, __global int* b_list, 
     
     if (off >= element_count) return;
     
-    a_list[b_list[off]] = 0;
+    if (a_list[b_list[off]] < 0) {
+        a_list[b_list[off]] = 0;
+    }
+    
 }
 

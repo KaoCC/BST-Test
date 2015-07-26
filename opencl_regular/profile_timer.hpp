@@ -27,29 +27,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef OPENCL_FACTORY_HPP
-#define	OPENCL_FACTORY_HPP
+#ifndef PROFILE_TIMER_HPP
+#define	PROFILE_TIMER_HPP
 
-#include <fstream>
-#include <iostream>
+#include <sys/time.h>
 
-#include <CL/cl.h>
+extern void start_timer();
+extern void stop_timer();
+extern long long int dump_timer_delta();
 
-#include "runtime_exception.hpp"
-
-using namespace std;
-
-extern cl_int           error;
-extern cl_platform_id   platform;
-extern cl_device_id     device_id;
-extern cl_context       context;
-extern cl_command_queue command_queue;
-extern cl_program       program;
-extern cl_kernel        kernel;
-
-extern void initialize_cl_environment();
-extern void load_cl_program_from_file(const char* file_name, const char* kernel_name);
-void load_cl_kernel_from_program(const char* kernel_name);
-
-#endif	/* OPENCL_FACTORY_HPP */
-
+#endif	/* PROFILE_TIMER_HPP */

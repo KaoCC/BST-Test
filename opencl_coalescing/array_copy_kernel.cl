@@ -27,35 +27,27 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-__kernel void array_copy_kernel(__global int* a_list, __global int* b_list, int element_count, 
-                                int stride) {
+__kernel void array_copy_kernel_stride_add(__global int* a_list, __global int* b_list,
+                                           int element_count, int stride) {
 
     int gid = get_global_id(0);
-
-// test 1:
-   int off = gid + (stride);
+    int off = gid + (stride);
     
-    if (off >= element_count) return;  
-    b_list[off] = a_list[off];
+    if (a_list[off] < 0) {
+        a_list[off] = gid;
+    }
+
+}
+
+__kernel void array_copy_kernel_stride_mul(__global int* a_list, __global int* b_list,
+                                           int element_count, int stride) {
+
+    int gid = get_global_id(0);
+    int off = gid * (stride);
     
-
-// test 2:
-
-//int off = gid % stride;
-//if (off >= element_count) return; 
-//b_list[off] = a_list[off];
-
-
-
-// test 3:
-
-//int off = gid;
-//for (int i = 0; i < 32; ++i) {
-//	b_list[off] += a_list[off + i + stride];
-//}
-
-
-
+    if (a_list[off] < 0) {
+        a_list[off] = gid;
+    }
 
 }
 

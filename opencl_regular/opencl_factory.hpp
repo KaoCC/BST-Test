@@ -48,8 +48,9 @@ extern cl_program       program;
 extern cl_kernel        kernel;
 
 extern void initialize_cl_environment();
-extern void load_cl_program_from_file(const char* file_name, const char* kernel_name);
+extern void load_cl_program_from_file(const char* file_name, const char* kernel_name=nullptr);
 void load_cl_kernel_from_program(const char* kernel_name);
+void free_cl_kernel_from_program(const char* kernel_name);
 
 #endif	/* OPENCL_FACTORY_HPP */
 

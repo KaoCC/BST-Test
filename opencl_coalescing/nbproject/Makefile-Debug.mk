@@ -14,14 +14,14 @@ GREP=grep
 NM=nm
 CCADMIN=CCadmin
 RANLIB=ranlib
-CC=clang
-CCC=clang++
-CXX=clang++
+CC=gcc
+CCC=g++
+CXX=g++
 FC=gfortran
 AS=as
 
 # Macros
-CND_PLATFORM=CLang-Linux-x86
+CND_PLATFORM=GNU-Linux-x86
 CND_DLIB_EXT=so
 CND_CONF=Debug
 CND_DISTDIR=dist
@@ -59,10 +59,10 @@ LDLIBSOPTIONS=-L/opt/AMDAPPSDK-2.9-1/lib/x86_64 -lOpenCL
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk bst
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk opencl_coalescing
 
-bst: ${OBJECTFILES}
-	${LINK.cc} -o bst ${OBJECTFILES} ${LDLIBSOPTIONS}
+opencl_coalescing: ${OBJECTFILES}
+	${LINK.cc} -o opencl_coalescing ${OBJECTFILES} ${LDLIBSOPTIONS}
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -95,7 +95,7 @@ ${OBJECTDIR}/runtime_exception.hpp.gch: runtime_exception.hpp
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} bst
+	${RM} opencl_coalescing
 
 # Subprojects
 .clean-subprojects:

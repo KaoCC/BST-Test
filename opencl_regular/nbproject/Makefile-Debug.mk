@@ -35,7 +35,6 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/bst_cpu.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/opencl_factory.o \
 	${OBJECTDIR}/profile_timer.o \
@@ -60,15 +59,10 @@ LDLIBSOPTIONS=-L/opt/AMDAPPSDK-2.9-1/lib/x86_64 -lOpenCL
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk opencl_bst
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk opencl_regular
 
-opencl_bst: ${OBJECTFILES}
-	${LINK.cc} -o opencl_bst ${OBJECTFILES} ${LDLIBSOPTIONS}
-
-${OBJECTDIR}/bst_cpu.o: bst_cpu.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I/usr/local/cuda-7.0/include -I/opt/AMDAPPSDK-2.9-1/include -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/bst_cpu.o bst_cpu.cpp
+opencl_regular: ${OBJECTFILES}
+	${LINK.cc} -o opencl_regular ${OBJECTFILES} ${LDLIBSOPTIONS} -static-libstdc++
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -101,7 +95,7 @@ ${OBJECTDIR}/runtime_exception.hpp.gch: runtime_exception.hpp
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} opencl_bst
+	${RM} opencl_regular
 
 # Subprojects
 .clean-subprojects:

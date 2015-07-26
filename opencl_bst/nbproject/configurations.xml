@@ -54,7 +54,7 @@
           <warningLevel>2</warningLevel>
         </ccTool>
         <linkerTool>
-          <output>bst</output>
+          <output>opencl_bst</output>
           <linkerAddLib>
             <pElem>/opt/AMDAPPSDK-2.9-1/lib/x86_64</pElem>
           </linkerAddLib>

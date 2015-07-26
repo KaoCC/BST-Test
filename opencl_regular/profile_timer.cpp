@@ -27,29 +27,24 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef OPENCL_FACTORY_HPP
-#define	OPENCL_FACTORY_HPP
+#include "profile_timer.hpp"
 
-#include <fstream>
-#include <iostream>
+struct timeval tv1, tv2;
+long long int delta;
 
-#include <CL/cl.h>
+void start_timer() {
+    // Get current time.
+    gettimeofday(&tv1, nullptr);
+}
 
-#include "runtime_exception.hpp"
+void stop_timer() {
+    // Get current time.
+    gettimeofday(&tv2, nullptr);
+    // Compute delta time.
+    delta = (tv2.tv_sec  - tv1.tv_sec) * 1000000 +
+            (tv2.tv_usec - tv1.tv_usec);
+}
 
-using namespace std;
-
-extern cl_int           error;
-extern cl_platform_id   platform;
-extern cl_device_id     device_id;
-extern cl_context       context;
-extern cl_command_queue command_queue;
-extern cl_program       program;
-extern cl_kernel        kernel;
-
-extern void initialize_cl_environment();
-extern void load_cl_program_from_file(const char* file_name, const char* kernel_name);
-void load_cl_kernel_from_program(const char* kernel_name);
-
-#endif	/* OPENCL_FACTORY_HPP */
-
+long long int dump_timer_delta() {
+    return delta;
+}

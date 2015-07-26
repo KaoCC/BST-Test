@@ -37,7 +37,8 @@
 #include "runtime_exception.hpp"
 #include "opencl_factory.hpp"
 
-#define ELEMENT_COUNT      (1024 * 4096)
+#define ELEMENT_COUNT      (1024 * 4096 * 128)
+#define WORKITEM_COUNT     (1024 * 4096)
 
 using namespace std;
 
@@ -55,7 +56,7 @@ int main(int argc, char** argv) {
     }
     
     initialize_cl_environment();
-    load_cl_program_from_file("array_copy_kernel.cl", "array_copy_kernel");
+    load_cl_program_from_file("array_copy_kernel.cl", "array_copy_kernel_stride_add");
 
     cl_mem cl_a_list = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof (int) * ELEMENT_COUNT,
                                       nullptr, nullptr);
@@ -67,20 +68,11 @@ int main(int argc, char** argv) {
 
     size_t global_size, local_size;
     int element_count = ELEMENT_COUNT;
-    global_size       = element_count;
+    global_size       = WORKITEM_COUNT;
     error = clGetKernelWorkGroupInfo(kernel, device_id,
                                      CL_KERNEL_WORK_GROUP_SIZE,
                                      sizeof (local_size), &local_size, nullptr);
     local_size = min(local_size, global_size);
-
-    	
-//    int i = 2;
-
-    int test =  0;
-
-
-//    __builtin_prefetch(a_list, 0, 3);
-//    __builtin_prefetch(b_list, 0, 3);
 
     for (int i = 0; i < 128; ++i) {
         error = clSetKernelArg(kernel, 0, sizeof(cl_mem), &cl_a_list);
@@ -94,8 +86,29 @@ int main(int argc, char** argv) {
     error = clEnqueueReadBuffer(command_queue, cl_b_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
                                 b_list, 0, nullptr, nullptr);
 
+    load_cl_kernel_from_program("array_copy_kernel_stride_mul");
+    error = clEnqueueWriteBuffer(command_queue, cl_a_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
+                                 a_list, 0, nullptr, nullptr);
 
+    element_count = ELEMENT_COUNT;
+    global_size   = WORKITEM_COUNT;
+    error = clGetKernelWorkGroupInfo(kernel, device_id,
+                                     CL_KERNEL_WORK_GROUP_SIZE,
+                                     sizeof (local_size), &local_size, nullptr);
+    local_size = min(local_size, global_size);
 
+    for (int i = 0; i < 128; ++i) {
+        error = clSetKernelArg(kernel, 0, sizeof(cl_mem), &cl_a_list);
+        error = clSetKernelArg(kernel, 1, sizeof(cl_mem), &cl_b_list);
+        error = clSetKernelArg(kernel, 2, sizeof(int),    &element_count);
+        error = clSetKernelArg(kernel, 3, sizeof(int),    &i);
+        error = clEnqueueNDRangeKernel(command_queue, kernel, 1, nullptr, &global_size, &local_size,
+                                       0, nullptr, nullptr);
+
+    }    
+    error = clEnqueueReadBuffer(command_queue, cl_b_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
+                                b_list, 0, nullptr, nullptr);
+    
     // Clean up.
     delete [] a_list;
     delete [] b_list;

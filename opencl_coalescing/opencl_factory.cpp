@@ -37,8 +37,6 @@ cl_command_queue command_queue;
 cl_program       program;
 cl_kernel        kernel;
 
-
-
 void initialize_cl_environment() {
     
     error = clGetPlatformIDs(1, &platform_id, nullptr);
@@ -90,4 +88,13 @@ void load_cl_program_from_file(const char* file_name, const char* kernel_name) {
     kernel = clCreateKernel(program, kernel_name, &error);
     if (error != CL_SUCCESS)
         DEBUG_THROW(ERR_SYSCALL_FAIL, "clCreateKernel error");
+}
+
+void load_cl_kernel_from_program(const char* kernel_name) {
+    
+    clReleaseKernel(kernel);
+    kernel = clCreateKernel(program, kernel_name, &error);
+    if (error != CL_SUCCESS)
+        DEBUG_THROW(ERR_SYSCALL_FAIL, "clCreateKernel error");
+    
 }

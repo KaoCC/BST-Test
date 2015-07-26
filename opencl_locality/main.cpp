@@ -38,7 +38,7 @@
 #include "runtime_exception.hpp"
 #include "opencl_factory.hpp"
 
-#define ELEMENT_COUNT      (64)
+#define ELEMENT_COUNT      (64 * 4096 * 128 * 32)
 
 using namespace std;
 
@@ -67,17 +67,20 @@ int main(int argc, char** argv) {
 
     size_t global_size, local_size;
     int element_count = ELEMENT_COUNT;
-    global_size       = element_count;
-    local_size        = 1;
+    global_size       = 64 * 4096 * 128;
+    local_size        = 64;
 
-    error = clSetKernelArg(kernel, 0, sizeof (cl_mem), &cl_a_list);
-    error = clSetKernelArg(kernel, 1, sizeof (int), &element_count);
-    error = clEnqueueNDRangeKernel(command_queue, kernel, 1, nullptr, &global_size, &local_size,
+    for (int i = 1; i <= 32; i++) {
+        error = clSetKernelArg(kernel, 0, sizeof (cl_mem), &cl_a_list);
+        error = clSetKernelArg(kernel, 1, sizeof (int), &i);
+        error = clSetKernelArg(kernel, 2, sizeof (int), &element_count);
+        error = clEnqueueNDRangeKernel(command_queue, kernel, 1, nullptr, &global_size, &local_size,
             0, nullptr, nullptr);
 
-    error = clEnqueueReadBuffer(command_queue, cl_a_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
-                                a_list, 0, nullptr, nullptr);
-    
+        error = clEnqueueReadBuffer(command_queue, cl_a_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
+                                    a_list, 0, nullptr, nullptr);
+    }
+
     // Test 2: vertical.
     load_cl_kernel_from_program("vertical_kernel");
     
@@ -88,7 +91,7 @@ int main(int argc, char** argv) {
     error = clEnqueueWriteBuffer(command_queue, cl_a_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
                                  a_list, 0, nullptr, nullptr);
 
-    element_count = ELEMENT_COUNT;
+    element_count = 64 * 4096;
     global_size   = 1;
     local_size    = 1;
 

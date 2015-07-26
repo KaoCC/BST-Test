@@ -15,7 +15,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>array_copy_kernel.cl</itemPath>
+      <itemPath>benchmark_kernel.cl</itemPath>
       <itemPath>main.cpp</itemPath>
       <itemPath>opencl_factory.cpp</itemPath>
       <itemPath>profile_timer.cpp</itemPath>
@@ -51,16 +51,17 @@
           <warningLevel>2</warningLevel>
         </ccTool>
         <linkerTool>
-          <output>opencl_coalescing</output>
+          <output>opencl_regular</output>
           <linkerAddLib>
             <pElem>/opt/AMDAPPSDK-2.9-1/lib/x86_64</pElem>
           </linkerAddLib>
           <linkerLibItems>
             <linkerLibLibItem>OpenCL</linkerLibLibItem>
           </linkerLibItems>
+          <commandLine>-static-libstdc++</commandLine>
         </linkerTool>
       </compileType>
-      <item path="array_copy_kernel.cl" ex="false" tool="3" flavor2="0">
+      <item path="benchmark_kernel.cl" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -97,7 +98,7 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="array_copy_kernel.cl" ex="false" tool="3" flavor2="0">
+      <item path="benchmark_kernel.cl" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>

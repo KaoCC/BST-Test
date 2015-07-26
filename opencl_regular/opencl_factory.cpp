@@ -85,16 +85,25 @@ void load_cl_program_from_file(const char* file_name, const char* kernel_name) {
         DEBUG_THROW(ERR_SYSCALL_FAIL, "clCreateProgramWithSource %s", error_buffer);
     }
     
-    kernel = clCreateKernel(program, kernel_name, &error);
-    if (error != CL_SUCCESS)
-        DEBUG_THROW(ERR_SYSCALL_FAIL, "clCreateKernel error");
+    if (kernel_name != nullptr) {
+        kernel = clCreateKernel(program, kernel_name, &error);
+        if (error != CL_SUCCESS)
+            DEBUG_THROW(ERR_SYSCALL_FAIL, "clCreateKernel error");
+    }
 }
 
 void load_cl_kernel_from_program(const char* kernel_name) {
     
-    clReleaseKernel(kernel);
     kernel = clCreateKernel(program, kernel_name, &error);
     if (error != CL_SUCCESS)
         DEBUG_THROW(ERR_SYSCALL_FAIL, "clCreateKernel error");
+    
+}
+
+void free_cl_kernel_from_program(const char* kernel_name) {
+    
+    clReleaseKernel(kernel);
+    if (error != CL_SUCCESS)
+        DEBUG_THROW(ERR_SYSCALL_FAIL, "clReleaseKernel error");
     
 }
