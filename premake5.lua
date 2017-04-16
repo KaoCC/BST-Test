@@ -46,7 +46,7 @@ workspace "HeteroBench"
     project "MemoryOpenCL"
         kind "ConsoleApp"
 
-        includedirs {"opencl_common/include", "opencl_memory/include"}
-        files {"opencl_common/**.cpp","opencl_common/**.hpp","opencl_memory/**.cpp", "opencl_memory/**.hpp"}
+        includedirs {"Utility/OpenCL/include"}
+        files {"Utility/OpenCL/**.cpp", "Utility/OpenCL/**.hpp", "Testbed/opencl_memory/**.cpp", "Testbed/opencl_memory/**.hpp"}
 
 
