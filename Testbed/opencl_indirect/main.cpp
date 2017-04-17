@@ -85,12 +85,20 @@ int main(int argc, char** argv) {
     error = clSetKernelArg(kernel, 0, sizeof (cl_mem), &cl_a_list);
     error = clSetKernelArg(kernel, 1, sizeof (cl_mem), &cl_b_list);
     error = clSetKernelArg(kernel, 2, sizeof (int), &element_count);
+
+	start_timer();
     error = clEnqueueNDRangeKernel(command_queue, kernel, 1, nullptr, &global_size, &local_size,
             0, nullptr, nullptr);
 
+	stop_timer();
+	DEBUG_PRINT(ERR_INFO, "Ind GPU clEnqueueNDRangeKernel time: %lld\n", dump_timer_delta());
+
+	start_timer();
     error = clEnqueueReadBuffer(command_queue, cl_a_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
                                 b_list, 0, nullptr, nullptr);
-    
+	stop_timer();
+	DEBUG_PRINT(ERR_INFO, "Ind GPU clEnqueueReadBuffer time: %lld\n", dump_timer_delta());
+
     // Test 2: global shuffled pattern.
     for (int i = 0; i < ELEMENT_COUNT; i++) {
         b_vec[i] = i;
@@ -98,10 +106,14 @@ int main(int argc, char** argv) {
     random_shuffle(b_vec.begin(), b_vec.end());
     b_list = &b_vec[0];
     
+	start_timer();
     error = clEnqueueWriteBuffer(command_queue, cl_a_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
                                  a_list, 0, nullptr, nullptr);
     error = clEnqueueWriteBuffer(command_queue, cl_b_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
                                  b_list, 0, nullptr, nullptr);
+
+	stop_timer();
+	DEBUG_PRINT(ERR_INFO, "Ind GPU clEnqueueWriteBuffer time: %lld\n", dump_timer_delta());
 
     global_size       = element_count;
     error = clGetKernelWorkGroupInfo(kernel, device_id,
@@ -112,11 +124,18 @@ int main(int argc, char** argv) {
     error = clSetKernelArg(kernel, 0, sizeof (cl_mem), &cl_a_list);
     error = clSetKernelArg(kernel, 1, sizeof (cl_mem), &cl_b_list);
     error = clSetKernelArg(kernel, 2, sizeof (int), &element_count);
+
+	start_timer();
     error = clEnqueueNDRangeKernel(command_queue, kernel, 1, nullptr, &global_size, &local_size,
             0, nullptr, nullptr);
+	stop_timer();
+	DEBUG_PRINT(ERR_INFO, "Ind GPU clEnqueueNDRangeKernel time: %lld\n", dump_timer_delta());
 
+	start_timer();
     error = clEnqueueReadBuffer(command_queue, cl_a_list, CL_TRUE, 0, sizeof (int) * ELEMENT_COUNT,
                                 b_list, 0, nullptr, nullptr);
+	stop_timer();
+	DEBUG_PRINT(ERR_INFO, "Ind GPU clEnqueueReadBuffer time: %lld\n", dump_timer_delta());
     
     // Test 2: warp internal shuffled pattern.
     for (int i = 0; 64 * (int) pow(2, i) < ELEMENT_COUNT; i++) {
