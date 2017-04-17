@@ -4,6 +4,10 @@ if os.is("windows") then
     defines{ "WIN32" }
 end
 
+if os.is("linux") then
+	flags {"C++14"}
+end
+
 workspace "HeteroBench"
 
     location "Generated"
