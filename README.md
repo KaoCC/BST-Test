@@ -1,5 +1,6 @@
 # HeteroBench
-HeteroBench is a collection of numerous OpenCL benchmarks
+
+HeteroBench is a collection of numerous OpenCL benchmarks.
 
 
 ## Build
@@ -23,4 +24,17 @@ HeteroBench is a collection of numerous OpenCL benchmarks
 - Build it !
 
 `make config=release_x64`
+
+
+## How to contribute
+
+- Fork the repository, create a branch based on the current dev branch.
+
+- Add your benchmark files to the "Testbed" folder with the following format: "FrameworkType_ProjectName".
+
+- If you wish to extend the utilities, put the files to the "Utility" folder
+
+- Modify the premake configuration, append the project at the bottom of the list.
+
+- Create a "Pull Request".
 
