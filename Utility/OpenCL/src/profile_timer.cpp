@@ -59,7 +59,7 @@ long long int dump_timer_delta() {
 // For Windows using C++ Chronos
 
 static std::chrono::high_resolution_clock::time_point  gTimePoint[2];
-static std::chrono::duration<double> gDuration;
+static std::chrono::duration<long long int, std::nano> gDuration;
 //static std::chrono::duration<long long int> gDurationInt;
 
 void start_timer() {
@@ -74,16 +74,9 @@ void stop_timer() {
 
 //check this one 
 long long int dump_timer_delta() {
-	auto durationInt{ std::chrono::duration_cast<std::chrono::milliseconds>(gDuration) };
+	auto durationInt{ std::chrono::duration_cast<std::chrono::microseconds>(gDuration) };
 	return durationInt.count();
 }
-
-
-#ifdef _WIN32
-double dump_duration() {
-	return gDuration.count();
-}
-#endif
 
 
 #endif

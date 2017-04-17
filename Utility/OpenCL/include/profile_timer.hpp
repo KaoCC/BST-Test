@@ -41,8 +41,5 @@ extern void stop_timer();
 extern long long int dump_timer_delta();
 
 
-#ifdef _WIN32
-extern double dump_duration();
-#endif
 
 #endif	/* PROFILE_TIMER_HPP */
