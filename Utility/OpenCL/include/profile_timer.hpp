@@ -30,10 +30,19 @@
 #ifndef PROFILE_TIMER_HPP
 #define	PROFILE_TIMER_HPP
 
+#ifndef _WIN32
+
 #include <sys/time.h>
+
+#endif
 
 extern void start_timer();
 extern void stop_timer();
 extern long long int dump_timer_delta();
+
+
+#ifdef _WIN32
+extern double dump_duration();
+#endif
 
 #endif	/* PROFILE_TIMER_HPP */

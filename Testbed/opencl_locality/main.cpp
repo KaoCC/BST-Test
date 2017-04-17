@@ -38,7 +38,10 @@
 #include "runtime_exception.hpp"
 #include "opencl_factory.hpp"
 
+
 #define ELEMENT_COUNT      (64 * 4096 * 128 * 32)
+
+
 
 using namespace std;
 
@@ -47,7 +50,9 @@ using namespace std;
  */
 int main(int argc, char** argv) {
 
+#ifndef _WIN32
     runtime_exception::register_signal_handlers();
+#endif
     
     int* a_list = new int[ELEMENT_COUNT];
     
@@ -105,6 +110,7 @@ int main(int argc, char** argv) {
     
     // Clean up.
     delete [] a_list;
+
     clReleaseMemObject(cl_a_list);
     clReleaseKernel(kernel);
     clReleaseProgram(program);

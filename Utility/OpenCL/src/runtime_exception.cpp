@@ -29,6 +29,8 @@
 
 #include "runtime_exception.hpp"
 
+#ifndef _WIN32
+
 void runtime_exception::register_signal_handlers() {
 	struct sigaction signal_action;
 	memset(&signal_action, 0, sizeof(signal_action));
@@ -212,3 +214,61 @@ const char* runtime_exception::what() const noexcept {
     fprintf(stderr, "%s\n", message.c_str());
     return message.c_str();
 }
+
+
+#else
+
+// For windows
+runtime_exception::runtime_exception(const ExceptionType type,
+	const char* function,
+	const char* msg_format, ...
+) {
+	message_ = "";
+	message_ += COLOR_BF_RED;
+	switch (type) {
+	case ERR_ARGUMENT_INVALID:
+		message_ += "[ERR_ARGUMENT_INVALID]";
+		break;
+	case ERR_DATA_CURRUPT:
+		message_ += "[ERR_DATA_CURRUPT]";
+		break;
+	case ERR_DEVICE:
+		message_ += "[ERR_DEVICE]";
+		break;
+	case ERR_IO_FAIL:
+		message_ += "[ERR_IO_FAIL]";
+		break;
+	default:
+		message_ += "[UNKNOWN_ERROR]";
+		break;
+	}
+	message_ += COLOR_DEFAULT;
+	message_ += " ";
+	/**
+	* Build time stamp and function location.
+	*/
+	time_t msg_time = time(NULL);
+	char msg_time_formatted[runtime_exception::MSG_LENGTH_MAX_];
+	strftime(msg_time_formatted, sizeof(msg_time_formatted), "%F %T", localtime(&msg_time));
+	message_ += msg_time_formatted;
+	message_ += " ";
+	message_ += function;
+	message_ += "(): ";
+	/**
+	* Build user message.
+	*/
+	va_list msg_arg;
+	char* msg_arg_formatted = new char[runtime_exception::MSG_LENGTH_MAX_];
+	// Print formatted strings into allocated space.
+	va_start(msg_arg, msg_format);
+	vsprintf(msg_arg_formatted, msg_format, msg_arg);
+	va_end(msg_arg);
+	// Append message content.
+	message_ += msg_arg_formatted;
+	delete[] msg_arg_formatted;
+
+}
+
+
+
+#endif

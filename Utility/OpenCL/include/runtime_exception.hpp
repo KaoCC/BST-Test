@@ -30,6 +30,8 @@
 #ifndef RUNTIMEEXCEPTION_HPP
 #define	RUNTIMEEXCEPTION_HPP
 
+
+
 #include <exception>
 #include <cassert>
 #include <csignal>
@@ -38,7 +40,8 @@
 #include <cstring>
 #include <string>
 
-#include <execinfo.h>
+
+#include <time.h>
 
 #define COLOR_BF_RED    "\033[1;31m"
 #define COLOR_BF_YELLOW "\033[1;33m"
@@ -52,6 +55,8 @@
 		if (ERR_GLOBAL & type) fprintf(stderr, "%s %s:[%04d]:%s(): " format, \
 				type == ERR_INFO ? COLOR_BF_CYAN "[INFO]" COLOR_DEFAULT : "[ERROR]", mbstr, \
 				__LINE__, __func__, ##__VA_ARGS__); } while (0)
+
+
 
 #define DEBUG_THROW(type, format, ...) \
 	throw runtime_exception(type, __func__, format, ##__VA_ARGS__)
@@ -74,6 +79,10 @@ enum ExceptionType {
 	ERR_LIB_DEPEND        = (1 << 7)
 };
 
+#ifndef _WIN32
+
+#include <execinfo.h>
+
 class runtime_exception : public exception {
 public:
 	static void register_signal_handlers(void);
@@ -91,6 +100,23 @@ private:
 	string message_;
 	string stack_trace_;
 };
+
+#else
+
+// For Windows
+class runtime_exception : public exception {
+public:
+	runtime_exception(const ExceptionType type, const char* function,
+		const char* msg_format, ...);
+
+
+private:
+	static const int32_t MSG_LENGTH_MAX_ = 1024;
+	string message_;
+};
+
+
+#endif
 
 #endif	/* RUNTIMEEXCEPTION_HPP */
 

@@ -30,6 +30,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <vector>
+#include <algorithm>
 
 #include <CL/cl.h>
 
@@ -47,7 +48,9 @@ using namespace std;
  */
 int main(int argc, char** argv) {
 
+#ifndef _WIN32
     runtime_exception::register_signal_handlers();
+#endif
     
     int* a_list = new int[ELEMENT_COUNT];
     int* b_list = new int[ELEMENT_COUNT];
@@ -72,7 +75,7 @@ int main(int argc, char** argv) {
     error = clGetKernelWorkGroupInfo(kernel, device_id,
                                      CL_KERNEL_WORK_GROUP_SIZE,
                                      sizeof (local_size), &local_size, nullptr);
-    local_size = min(local_size, global_size);
+    local_size = std::min(local_size, global_size);
 
     for (int i = 0; i < 128; ++i) {
         error = clSetKernelArg(kernel, 0, sizeof(cl_mem), &cl_a_list);

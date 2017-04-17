@@ -47,7 +47,9 @@ using namespace std;
  */
 int main(int argc, char** argv) {
 
+#ifndef _WIN32
     runtime_exception::register_signal_handlers();
+#endif
     
     int* a_list = new int[ELEMENT_COUNT];
     int* b_list = nullptr;

@@ -48,7 +48,9 @@ void benchmark_black_scholes();
  */
 int main(int argc, char** argv) {
 
+#ifndef _WIN32
     runtime_exception::register_signal_handlers();
+#endif
 
     initialize_cl_environment();
     load_cl_program_from_file("benchmark_kernel.cl");

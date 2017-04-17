@@ -29,6 +29,8 @@
 
 #include "profile_timer.hpp"
 
+#ifndef _WIN32
+
 struct timeval tv1, tv2;
 long long int delta;
 
@@ -48,3 +50,41 @@ void stop_timer() {
 long long int dump_timer_delta() {
     return delta;
 }
+
+
+#else
+
+#include <chrono>
+
+// For Windows using C++ Chronos
+
+static std::chrono::high_resolution_clock::time_point  gTimePoint[2];
+static std::chrono::duration<double> gDuration;
+//static std::chrono::duration<long long int> gDurationInt;
+
+void start_timer() {
+	gTimePoint[0] = std::chrono::high_resolution_clock::now();
+}
+
+void stop_timer() {
+	gTimePoint[1] = std::chrono::high_resolution_clock::now();
+	gDuration = gTimePoint[1] - gTimePoint[0];
+}
+
+
+//check this one 
+long long int dump_timer_delta() {
+	auto durationInt{ std::chrono::duration_cast<std::chrono::milliseconds>(gDuration) };
+	return durationInt.count();
+}
+
+
+#ifdef _WIN32
+double dump_duration() {
+	return gDuration.count();
+}
+#endif
+
+
+#endif
+
